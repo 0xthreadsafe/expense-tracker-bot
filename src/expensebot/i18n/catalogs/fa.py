@@ -9,22 +9,22 @@ MESSAGES: dict[str, str] = {
     # onboarding
     "welcome": (
         "👋 به ربات مدیریت هزینه خوش آمدید.\n\n"
-        "کافی است مبلغ و توضیح را بفرستید، مثلاً <code>۲۵۰۰۰ ناهار</code>، "
+        "کافی است مبلغ و توضیح را بفرستید، مثلاً <code>۲۵۰۰۰</code> ناهار، "
         "تا از شما بپرسم در کدام دسته ثبت شود.\n\n"
-        "برای دیدن همه امکانات /help را بزنید."
+        "برای دیدن همه امکانات ⁦/help⁩ را بزنید."
     ),
     "help": (
         "<b>دستورها</b>\n"
-        "/add — ثبت هزینه\n"
-        "/list — مرور و ویرایش هزینه‌های اخیر\n"
-        "/report — خلاصه و نمودار این ماه\n"
-        "/categories — مدیریت دسته‌ها\n"
-        "/export — دریافت خروجی CSV\n"
-        "/remind — یادآور روزانه ثبت هزینه\n"
-        "/language — تغییر زبان\n"
-        "/settings — نمایش تنظیمات\n\n"
-        "<b>نکته</b>: می‌توانید /add را ننویسید و مستقیم "
-        "<code>۲۵۰۰۰ ناهار</code> بفرستید."
+        "⁦/add⁩ — ثبت هزینه\n"
+        "⁦/list⁩ — مرور و ویرایش هزینه‌های اخیر\n"
+        "⁦/report⁩ — خلاصه و نمودار این ماه\n"
+        "⁦/categories⁩ — مدیریت دسته‌ها\n"
+        "⁦/export⁩ — دریافت خروجی CSV\n"
+        "⁦/remind⁩ — یادآور روزانه ثبت هزینه\n"
+        "⁦/language⁩ — تغییر زبان\n"
+        "⁦/settings⁩ — نمایش تنظیمات\n\n"
+        "<b>نکته</b>: می‌توانید ⁦/add⁩ را ننویسید و مستقیم "
+        "<code>۲۵۰۰۰</code> ناهار بفرستید."
     ),
     "settings_title": "<b>تنظیمات</b>",
     "settings_language": "زبان: {value}",
@@ -40,7 +40,7 @@ MESSAGES: dict[str, str] = {
     "expense_saved": "✅ {amount} در دسته {category} ثبت شد.",
     "expense_note_suffix": " — {note}",
     "parse_failed": (
-        "نتوانستم مبلغی در پیام شما پیدا کنم.\n" "چیزی مثل <code>۲۵۰۰۰ ناهار</code> بفرستید."
+        "نتوانستم مبلغی در پیام شما پیدا کنم.\n" "چیزی مثل <code>۲۵۰۰۰</code> ناهار بفرستید."
     ),
     "amount_too_large": "این مبلغ بیش از حد بزرگ به نظر می‌رسد.",
     "amount_must_be_positive": "مبلغ باید بزرگ‌تر از صفر باشد.",
@@ -64,7 +64,7 @@ MESSAGES: dict[str, str] = {
     "category_deleted": "🗑 دسته حذف شد. هزینه‌های آن حفظ شدند.",
     "category_builtin_hidden": "دسته پنهان شد. دسته‌های پیش‌فرض حذف‌شدنی نیستند.",
     "ask_category_name": "نام دسته چه باشد؟",
-    "ask_category_emoji": "یک ایموجی برای آن بفرستید، یا /skip را بزنید.",
+    "ask_category_emoji": "یک ایموجی برای آن بفرستید، یا ⁦/skip⁩ را بزنید.",
     "category_exists": "دسته‌ای با این نام از قبل دارید.",
     "category_limit": "به حداکثر {limit} دسته رسیده‌اید.",
     # reports
@@ -88,10 +88,10 @@ MESSAGES: dict[str, str] = {
     "reminder_set": "⏰ هر روز ساعت {time} یادآوری می‌کنم.",
     "reminder_cleared": "یادآور روزانه خاموش شد.",
     "reminder_usage": (
-        "برای تنظیم زمان <code>/remind 21:30</code> و برای خاموش کردن "
-        "<code>/remind off</code> را بزنید."
+        "برای تنظیم زمان <code>⁦/remind 21:30⁩</code> و برای خاموش کردن "
+        "<code>⁦/remind off⁩</code> را بزنید."
     ),
-    "reminder_bad_time": "زمان معتبر نیست. قالب ۲۴ ساعته مثل <code>21:30</code> بنویسید.",
+    "reminder_bad_time": "زمان معتبر نیست. قالب ۲۴ ساعته مثل <code>⁦21:30⁩</code> بنویسید.",
     "reminder_nudge": "🌙 امروز هیچ هزینه‌ای ثبت نکرده‌اید.",
     # buttons
     "btn_prev": "‹ قبلی",

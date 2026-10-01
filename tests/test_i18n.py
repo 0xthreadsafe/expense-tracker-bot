@@ -131,3 +131,37 @@ def test_a_new_locale_is_a_drop_in() -> None:
         assert format_number(1234, "qq") == "¹ ²³⁴"
     finally:
         del LOCALES["qq"]
+
+
+@pytest.mark.parametrize("code", sorted(c for c in LOCALES if LOCALES[c].rtl))
+def test_rtl_catalogs_keep_persian_out_of_code_spans(code: str) -> None:
+    """Telegram renders <code> in a monospace font that does not shape Arabic.
+
+    Persian inside a code span appears as disconnected, unjoined letters, so
+    the example value stays in the span and the word moves outside it.
+    """
+    import re
+
+    # Letters only: Arabic-Indic digits share the block but shape correctly.
+    arabic_letters = re.compile("[\u0620-\u064a\u0671-\u06d3]")
+    for key, template in LOCALES[code].messages.items():
+        for span in re.findall(r"<code>(.*?)</code>", template, re.DOTALL):
+            assert not arabic_letters.search(
+                span
+            ), f"{key}: Persian letters inside <code>: {span!r}"
+
+
+@pytest.mark.parametrize("code", sorted(c for c in LOCALES if LOCALES[c].rtl))
+def test_rtl_catalogs_isolate_latin_command_tokens(code: str) -> None:
+    """An un-isolated /command is reordered to 'command/' inside Persian text."""
+    import re
+
+    for key, template in LOCALES[code].messages.items():
+        # Strip markup first, or the closing </code> tag looks like a command.
+        stripped = re.sub(r"<[^>]+>", lambda m: " " * len(m.group()), template)
+        for match in re.finditer(r"/[a-z]+", stripped):
+            before = stripped[: match.start()]
+            # The token must sit inside an isolate that has not yet been popped.
+            assert before.count("⁦") > before.count(
+                "⁩"
+            ), f"{key}: {match.group()} is not bidi-isolated"

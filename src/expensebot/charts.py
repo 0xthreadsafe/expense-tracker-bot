@@ -46,6 +46,17 @@ PALETTE = (
 )
 
 
+def compact_number(value: float, _position: int | None = None) -> str:
+    """Abbreviate an axis value, e.g. 317500000 -> '317.5M'."""
+    for threshold, suffix in ((1_000_000_000, "B"), (1_000_000, "M"), (1_000, "K")):
+        if abs(value) >= threshold:
+            scaled = value / threshold
+            # Drop a trailing .0 so round numbers stay short.
+            text = f"{scaled:.1f}".rstrip("0").rstrip(".")
+            return f"{text}{suffix}"
+    return f"{value:,.0f}"
+
+
 def _is_renderable(text: str) -> bool:
     """True when every character is Latin-1, which matplotlib renders reliably."""
     try:
@@ -109,13 +120,16 @@ def render_breakdown(totals: Sequence[CategoryTotal], *, title: str, currency: s
             axes.text(
                 value + largest * 0.01,
                 index,
-                f"{value:,.0f}",
+                compact_number(value) if largest >= 1_000_000 else f"{value:,.0f}",
                 va="center",
                 fontsize=9,
             )
 
         # Match the grouping used by the value labels and the text report.
-        axes.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _pos: f"{v:,.0f}"))
+        # Nine-digit values make fully grouped tick labels collide, so ticks are
+        # thinned and abbreviated; exact figures stay on the value labels.
+        axes.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=5, prune="lower"))
+        axes.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(compact_number))
         axes.spines[["top", "right"]].set_visible(False)
         axes.grid(axis="x", color="#E6E6E6", linewidth=0.8)
         axes.set_axisbelow(True)
