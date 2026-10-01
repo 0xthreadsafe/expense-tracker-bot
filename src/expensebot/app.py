@@ -52,10 +52,15 @@ def build_application(settings: Settings | None = None) -> Application:
 def register_handlers(application: Application) -> None:
     """Attach every handler to the application.
 
-    Handlers are added here, in one place, so the bot's surface area can be read
-    off a single function. Order matters: more specific handlers go first.
+    Registration is delegated to each feature module so that the bot's surface
+    area can be read off this one function. Order matters: the free-form
+    message handler in ``expenses`` must be registered last so that it cannot
+    shadow a more specific handler.
     """
-    # Commands land here as the feature issues are implemented.
+    from expensebot.handlers import expenses, start
+
+    start.register(application)
+    expenses.register(application)
 
 
 def run() -> None:
