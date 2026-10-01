@@ -41,6 +41,13 @@ expensebot = ["py.typed"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    # Entered from a button but answered with ordinary messages, which is the
+    # combination this warning describes and which is intended here; the
+    # reasoning is recorded at each ConversationHandler.
+    "ignore:If 'per_message=False':UserWarning",
+]
 
 [tool.ruff]
 line-length = 100

@@ -23,11 +23,13 @@ async def _on_startup(application: Application) -> None:
     engine binds to the running loop.
     """
     from expensebot.handlers.reminders import restore_reminders
+    from expensebot.menu import setup_commands
 
     settings = get_settings()
     await init_db(settings.database_url)
     # Scheduled jobs live only in memory, so they are rebuilt from the database.
     await restore_reminders(application)
+    await setup_commands(application.bot)
     logger.info("Bot started as @%s", application.bot.username)
 
 

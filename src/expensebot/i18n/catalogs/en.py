@@ -109,6 +109,16 @@ MESSAGES: dict[str, str] = {
     "rate_limited": "You are doing that too often. Try again in a moment.",
     "not_found": "I could not find that any more.",
     "uncategorized": "Uncategorized",
+    # command menu descriptions (shown by Telegram's Menu button)
+    "cmd_add": "Record an expense",
+    "cmd_list": "Browse and edit recent expenses",
+    "cmd_report": "This month's summary and chart",
+    "cmd_categories": "Manage your categories",
+    "cmd_export": "Download your expenses as CSV",
+    "cmd_remind": "Daily reminder to log spending",
+    "cmd_language": "Change language",
+    "cmd_settings": "Show current settings",
+    "cmd_help": "Show help",
     # built-in category names (keyed by slug)
     "category.food": "Food",
     "category.transport": "Transport",

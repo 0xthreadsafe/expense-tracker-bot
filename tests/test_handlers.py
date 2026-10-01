@@ -192,13 +192,15 @@ async def test_report_sends_a_summary_and_a_chart() -> None:
     food = next(c for c in await _categories() if c.slug == "food")
     await expenses.category_chosen(_any(tap(f"pick:{food.id}")), _any(context))
 
-    update = command("/report")
-    await reports.report_command(_any(update), _any(FakeContext()))
+    update, context = command("/report"), FakeContext()
+    await reports.report_command(_any(update), _any(context))
 
     assert update.message is not None
     summary, chart = update.message.sent[0], update.message.sent[1]
     assert "25,000" in text_of(summary)
     assert chart.photo is not None and chart.photo[:4] == b"\x89PNG"
+    # Chart rendering is slow enough to look like a stall without feedback.
+    assert context.bot.actions == ["upload_photo"]
 
 
 async def test_expensive_commands_are_rate_limited() -> None:
@@ -220,10 +222,11 @@ async def test_export_is_excel_safe_and_keeps_persian_intact() -> None:
     food = next(c for c in await _categories() if c.slug == "food")
     await expenses.category_chosen(_any(tap(f"pick:{food.id}")), _any(context))
 
-    update = command("/export")
-    await export.export_command(_any(update), _any(FakeContext()))
+    update, context = command("/export"), FakeContext()
+    await export.export_command(_any(update), _any(context))
 
     assert update.message is not None
+    assert context.bot.actions == ["upload_document"]
     payload = update.message.sent[0].document
     assert payload.startswith(b"\xef\xbb\xbf"), "Excel needs a BOM to read UTF-8"
     assert "ناهار" in payload.decode("utf-8-sig")

@@ -8,7 +8,7 @@ from decimal import Decimal
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from telegram import Update
-from telegram.constants import ParseMode
+from telegram.constants import ChatAction, ParseMode
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 from expensebot import repository as repo
@@ -99,6 +99,12 @@ async def report_command(
     ]
 
     await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.HTML)
+
+    # Rendering takes long enough to look like the bot has stalled, so the
+    # client is told to show "typing" first. The action lapses on its own once
+    # the photo arrives.
+    assert update.effective_chat is not None
+    await context.bot.send_chat_action(update.effective_chat.id, ChatAction.UPLOAD_PHOTO)
 
     # Chart rendering is CPU-bound; running it inline would stall every other
     # user's updates for its duration.

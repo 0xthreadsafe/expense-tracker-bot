@@ -112,6 +112,16 @@ MESSAGES: dict[str, str] = {
     "rate_limited": "بیش از حد سریع درخواست می‌دهید. کمی بعد دوباره تلاش کنید.",
     "not_found": "دیگر نتوانستم آن را پیدا کنم.",
     "uncategorized": "بدون دسته",
+    # command menu descriptions (shown by Telegram's Menu button)
+    "cmd_add": "ثبت هزینه",
+    "cmd_list": "مرور و ویرایش هزینه‌های اخیر",
+    "cmd_report": "خلاصه و نمودار این ماه",
+    "cmd_categories": "مدیریت دسته‌ها",
+    "cmd_export": "دریافت خروجی CSV",
+    "cmd_remind": "یادآور روزانه ثبت هزینه",
+    "cmd_language": "تغییر زبان",
+    "cmd_settings": "نمایش تنظیمات",
+    "cmd_help": "نمایش راهنما",
     # built-in category names (keyed by slug)
     "category.food": "خوراک",
     "category.transport": "حمل‌ونقل",

@@ -29,7 +29,8 @@ Bot  ›  ✅ Saved 25,000 IRR under 🍔 Food.           [Undo]
 - **Reminders** — opt-in nightly nudge, in your own timezone, only when you
   have logged nothing that day.
 - **Two languages** — switch any time with `/language`; new users are matched
-  to their Telegram language automatically.
+  to their Telegram language automatically. The command menu beside the input
+  box is published by the bot itself, in both languages.
 
 ## Commands
 

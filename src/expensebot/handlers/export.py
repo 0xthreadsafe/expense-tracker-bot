@@ -8,6 +8,7 @@ import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from telegram import Update
+from telegram.constants import ChatAction
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 from expensebot import repository as repo
@@ -81,6 +82,9 @@ async def export_command(
         )
         for e in reversed(expenses)
     ]
+
+    assert update.effective_chat is not None
+    await context.bot.send_chat_action(update.effective_chat.id, ChatAction.UPLOAD_DOCUMENT)
 
     payload = build_csv(rows, headers)
     await update.message.reply_document(

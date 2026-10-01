@@ -101,3 +101,11 @@ Do not "fix" these without asking; they are decisions, not oversights.
 - Chart rendering must stay inside `asyncio.to_thread`; it is CPU-bound and
   blocks every other user otherwise.
 - Error replies are generic by design — exception text can carry tokens.
+- Adding a command means four things, not one: the handler, its registration in
+  `app.py`, an entry in `menu.COMMANDS`, and a `cmd_<name>` description in every
+  catalog. `tests/test_menu.py` fails if the menu advertises a command with no
+  handler, and the i18n parity tests fail on a missing description.
+- Send a chat action before anything slow (`ChatAction.UPLOAD_PHOTO` for the
+  report chart, `UPLOAD_DOCUMENT` for exports); without it the bot looks stalled.
+- Warnings are errors in pytest. The one documented exception is PTB's
+  `per_message=False` notice, which does not apply to these conversations.

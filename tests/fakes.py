@@ -81,9 +81,17 @@ class FakeUpdate:
 @dataclass
 class FakeBot:
     sent: list[tuple[int, str]] = field(default_factory=list)
+    actions: list[str] = field(default_factory=list)
+    commands: list[tuple[str | None, list[Any]]] = field(default_factory=list)
 
     async def send_message(self, chat_id: int, text: str, **kwargs: Any) -> None:
         self.sent.append((chat_id, text))
+
+    async def send_chat_action(self, chat_id: int, action: str, **kwargs: Any) -> None:
+        self.actions.append(action)
+
+    async def set_my_commands(self, commands: list[Any], **kwargs: Any) -> None:
+        self.commands.append((kwargs.get("language_code"), commands))
 
 
 @dataclass
