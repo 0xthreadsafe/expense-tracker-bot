@@ -3,26 +3,26 @@ name = "expensebot"
 version = "1.0.0"
 description = "A Telegram bot for tracking personal expenses, with reports, charts and CSV export."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.14"
 license = { text = "MIT" }
 dependencies = [
-    "python-telegram-bot[job-queue,webhooks]==21.9",
-    "SQLAlchemy[asyncio]==2.0.36",
-    "aiosqlite==0.20.0",
-    "pydantic-settings==2.7.0",
-    "matplotlib==3.9.3",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest==8.3.4",
-    "pytest-asyncio==0.25.0",
-    "ruff==0.8.4",
-    "mypy==1.14.0",
+    "python-telegram-bot[job-queue,webhooks]>=21.9,<22",
+    "SQLAlchemy[asyncio]>=2.0.36,<3",
+    "aiosqlite>=0.20,<0.22",
+    "pydantic-settings>=2.7,<3",
+    "matplotlib>=3.9,<4",
 ]
 
 [project.scripts]
 expensebot = "expensebot.__main__:run"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3,<9",
+    "pytest-asyncio>=0.25,<0.26",
+    "ruff>=0.8,<0.9",
+    "mypy>=1.14,<2",
+]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -43,6 +43,6 @@ src = ["src", "tests"]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 packages = ["expensebot"]
 ignore_missing_imports = true

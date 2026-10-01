@@ -1,0 +1,76 @@
+"""Construction and startup of the Telegram application.
+
+``build_application`` performs no I/O, which keeps it usable from tests; ``run``
+is the only function that talks to Telegram.
+"""
+
+from __future__ import annotations
+
+import logging
+
+from telegram.ext import Application, ApplicationBuilder
+
+from expensebot.config import BotMode, Settings, get_settings
+
+logger = logging.getLogger(__name__)
+
+
+async def _on_startup(application: Application) -> None:
+    """Hook for work that must happen after the event loop exists.
+
+    Database initialisation and reminder-job registration attach here.
+    """
+    logger.info("Bot started as @%s", application.bot.username)
+
+
+async def _on_shutdown(application: Application) -> None:
+    """Release resources acquired in :func:`_on_startup`."""
+    logger.info("Bot stopped")
+
+
+def build_application(settings: Settings | None = None) -> Application:
+    """Create the application with handlers registered but nothing running."""
+    settings = settings or get_settings()
+
+    application = (
+        ApplicationBuilder()
+        .token(settings.bot_token.get_secret_value())
+        .post_init(_on_startup)
+        .post_shutdown(_on_shutdown)
+        .build()
+    )
+
+    register_handlers(application)
+    return application
+
+
+def register_handlers(application: Application) -> None:
+    """Attach every handler to the application.
+
+    Handlers are added here, in one place, so the bot's surface area can be read
+    off a single function. Order matters: more specific handlers go first.
+    """
+    # Commands land here as the feature issues are implemented.
+
+
+def run() -> None:
+    """Start the bot and block until it is interrupted."""
+    settings = get_settings()
+    application = build_application(settings)
+
+    if settings.bot_mode is BotMode.WEBHOOK:
+        assert settings.webhook_url is not None  # guaranteed by Settings validation
+        logger.info("Listening for webhooks on port %s", settings.webhook_port)
+        application.run_webhook(
+            listen=settings.webhook_listen,
+            port=settings.webhook_port,
+            url_path=settings.webhook_path,
+            webhook_url=f"{settings.webhook_url.rstrip('/')}/{settings.webhook_path}",
+            secret_token=(
+                settings.webhook_secret.get_secret_value() if settings.webhook_secret else None
+            ),
+        )
+    else:
+        logger.info("Polling for updates")
+        # drop_pending_updates avoids replaying a backlog accumulated while down.
+        application.run_polling(drop_pending_updates=True)
