@@ -1,0 +1,41 @@
+# Default: SQLite on a named volume, which is enough for a single instance.
+# Run `docker compose --profile postgres up` to use Postgres instead.
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - bot-data:/app/data
+
+  bot-postgres:
+    profiles: ["postgres"]
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://expensebot:expensebot@db:5432/expensebot
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    profiles: ["postgres"]
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: expensebot
+      POSTGRES_PASSWORD: expensebot
+      POSTGRES_DB: expensebot
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      # The bot starts before Postgres accepts connections otherwise.
+      test: ["CMD-SHELL", "pg_isready -U expensebot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bot-data:
+  pg-data:

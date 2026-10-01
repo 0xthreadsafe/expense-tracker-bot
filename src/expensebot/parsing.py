@@ -113,4 +113,19 @@ def parse_expense(text: str) -> ParsedExpense:
     if note is not None and len(note) > MAX_NOTE_LENGTH:
         raise ParseError("note_too_long", limit=MAX_NOTE_LENGTH)
 
-    return ParsedExpense(amount=amount.normalize(), note=note)
+    return ParsedExpense(amount=_tidy(amount), note=note)
+
+
+def _tidy(amount: Decimal) -> Decimal:
+    """Drop trailing zeros without falling into exponent notation.
+
+    ``Decimal("25000").normalize()`` yields ``2.5E+4``, which is numerically
+    correct but renders badly anywhere the value is stringified.
+    """
+    normalized = amount.normalize()
+    exponent = normalized.as_tuple().exponent
+    # A non-integer exponent marks NaN or Infinity, which cannot reach here but
+    # must still be excluded before comparing.
+    if isinstance(exponent, int) and exponent > 0:
+        return normalized.quantize(Decimal(1))
+    return normalized
