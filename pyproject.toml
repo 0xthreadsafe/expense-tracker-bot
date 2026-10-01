@@ -31,6 +31,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+expensebot = ["py.typed"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
@@ -41,8 +44,14 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# The message catalogs are intentionally multilingual, and typographic
+# characters such as the angle quotes used on buttons are deliberate. The
+# ambiguous-unicode rules exist to catch homoglyphs smuggled into ASCII source
+# and only produce false positives here.
+ignore = ["RUF001", "RUF002", "RUF003"]
 
 [tool.mypy]
 python_version = "3.12"
-packages = ["expensebot"]
+files = ["src", "tests"]
+mypy_path = "src"
 ignore_missing_imports = true
