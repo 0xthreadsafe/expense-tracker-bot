@@ -15,6 +15,37 @@ Bot  ›  25,000 IRR — lunch
 Bot  ›  ✅ Saved 25,000 IRR under 🍔 Food.           [Undo]
 ```
 
+## Screenshots
+
+Running in Persian, with right-to-left text, Persian numerals and localized
+category names throughout.
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/01-onboarding.png" alt="Onboarding and help in Persian"></td>
+<td width="33%"><img src="docs/screenshots/03-add-expense.png" alt="Recording an expense and choosing a category"></td>
+<td width="33%"><img src="docs/screenshots/05-report-chart.png" alt="Monthly report with a chart"></td>
+</tr>
+<tr>
+<td align="center"><em>Onboarding and help</em></td>
+<td align="center"><em>Adding an expense</em></td>
+<td align="center"><em>Monthly report and chart</em></td>
+</tr>
+<tr>
+<td width="33%"><img src="docs/screenshots/02-categories.png" alt="Managing categories"></td>
+<td width="33%"><img src="docs/screenshots/04-settings-reminder.png" alt="Settings and daily reminder"></td>
+<td width="33%"></td>
+</tr>
+<tr>
+<td align="center"><em>Categories</em></td>
+<td align="center"><em>Settings and reminders</em></td>
+<td></td>
+</tr>
+</table>
+
+Note the chart: labels are English by design, because matplotlib does no Arabic
+shaping. See [Known limits](#known-limits).
+
 ## Features
 
 - **Fast entry** — send `25000 lunch`, or `/add 25000 lunch`. Understands
