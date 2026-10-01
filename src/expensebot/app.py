@@ -22,8 +22,12 @@ async def _on_startup(application: Application) -> None:
     The engine is created here rather than at import time because an async
     engine binds to the running loop.
     """
+    from expensebot.handlers.reminders import restore_reminders
+
     settings = get_settings()
     await init_db(settings.database_url)
+    # Scheduled jobs live only in memory, so they are rebuilt from the database.
+    await restore_reminders(application)
     logger.info("Bot started as @%s", application.bot.username)
 
 
@@ -57,10 +61,27 @@ def register_handlers(application: Application) -> None:
     message handler in ``expenses`` must be registered last so that it cannot
     shadow a more specific handler.
     """
-    from expensebot.handlers import expenses, start
+    from expensebot.handlers import (
+        categories,
+        errors,
+        expenses,
+        export,
+        listing,
+        reminders,
+        reports,
+        start,
+    )
 
     start.register(application)
+    categories.register(application)
+    listing.register(application)
+    reports.register(application)
+    export.register(application)
+    reminders.register(application)
+    # Registered last: its catch-all text handler would otherwise shadow the
+    # conversation steps belonging to the modules above.
     expenses.register(application)
+    errors.register(application)
 
 
 def run() -> None:
