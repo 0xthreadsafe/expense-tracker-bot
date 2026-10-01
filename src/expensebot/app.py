@@ -11,20 +11,25 @@ import logging
 from telegram.ext import Application, ApplicationBuilder
 
 from expensebot.config import BotMode, Settings, get_settings
+from expensebot.db import dispose_db, init_db
 
 logger = logging.getLogger(__name__)
 
 
 async def _on_startup(application: Application) -> None:
-    """Hook for work that must happen after the event loop exists.
+    """Work that must happen after the event loop exists.
 
-    Database initialisation and reminder-job registration attach here.
+    The engine is created here rather than at import time because an async
+    engine binds to the running loop.
     """
+    settings = get_settings()
+    await init_db(settings.database_url)
     logger.info("Bot started as @%s", application.bot.username)
 
 
 async def _on_shutdown(application: Application) -> None:
     """Release resources acquired in :func:`_on_startup`."""
+    await dispose_db()
     logger.info("Bot stopped")
 
 
