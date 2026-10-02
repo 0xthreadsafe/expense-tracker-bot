@@ -11,7 +11,7 @@ from enum import StrEnum
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import AliasChoices, Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -37,7 +37,14 @@ class Settings(BaseSettings):
 
     # Only consulted when bot_mode is WEBHOOK.
     webhook_url: str | None = None
-    webhook_port: int = Field(default=8080, ge=1, le=65535)
+    # Platforms such as Render and Heroku inject the port to bind as PORT, so it
+    # is accepted as an alias and the service needs no platform-specific config.
+    webhook_port: int = Field(
+        default=8080,
+        ge=1,
+        le=65535,
+        validation_alias=AliasChoices("WEBHOOK_PORT", "PORT"),
+    )
     webhook_listen: str = "0.0.0.0"
     webhook_secret: SecretStr | None = None
 
