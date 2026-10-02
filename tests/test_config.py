@@ -37,3 +37,15 @@ def test_webhook_mode_requires_a_url(monkeypatch: pytest.MonkeyPatch) -> None:
 
     with pytest.raises(ValueError, match="WEBHOOK_URL"):
         settings()
+
+
+def test_webhook_path_never_contains_the_token(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Hosts and proxies log request paths, so a token in the URL leaks."""
+    monkeypatch.setenv("WEBHOOK_SECRET", "a-secret")
+    config = settings()
+
+    assert config.bot_token.get_secret_value() not in config.webhook_path
+    assert "a-secret" not in config.webhook_path
+    # Unguessable, and stable so the registered URL does not drift per restart.
+    assert len(config.webhook_path) == 32
+    assert config.webhook_path == settings().webhook_path

@@ -7,6 +7,7 @@ error instead of surfacing as a confusing ``None`` deep inside a handler.
 
 from __future__ import annotations
 
+import hashlib
 from enum import StrEnum
 from functools import lru_cache
 from typing import Literal
@@ -65,12 +66,20 @@ class Settings(BaseSettings):
 
     @property
     def webhook_path(self) -> str:
-        """Secret-ish URL path Telegram posts updates to.
+        """Unguessable URL path Telegram posts updates to.
 
-        Using the token as the path means an attacker who does not know the
-        token cannot reach the endpoint, which is Telegram's own recommendation.
+        The path is a hash rather than the token itself: hosts, proxies and CDNs
+        record request paths in plain text, so a token placed in the URL ends up
+        in logs outside this application's control. Authenticity is established
+        by the secret_token header instead, which is never logged; the hash only
+        keeps the endpoint from being discovered by chance.
         """
-        return self.bot_token.get_secret_value()
+        material = (
+            self.webhook_secret.get_secret_value()
+            if self.webhook_secret
+            else self.bot_token.get_secret_value()
+        )
+        return hashlib.sha256(material.encode()).hexdigest()[:32]
 
 
 @lru_cache(maxsize=1)
