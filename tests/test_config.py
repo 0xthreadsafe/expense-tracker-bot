@@ -2,9 +2,18 @@ from __future__ import annotations
 
 import pytest
 
-from expensebot.config import BotMode, Settings
+from expensebot.config import Settings
 
-TOKEN = "123456789:AAFakeTokenUsedOnlyInTests"
+
+def settings() -> Settings:
+    # Values come from the environment, which mypy cannot see.
+    return Settings()  # type: ignore[call-arg]
+
+
+# BOT_TOKEN and friends come from the autouse fixture in conftest, and
+# environment variables take precedence over the dotenv file, so these build
+# settings from the environment rather than passing private constructor
+# arguments.
 
 
 def test_port_is_accepted_as_an_alias(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -12,16 +21,19 @@ def test_port_is_accepted_as_an_alias(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("PORT", "10000")
     monkeypatch.delenv("WEBHOOK_PORT", raising=False)
 
-    assert Settings(_env_file=None, bot_token=TOKEN).webhook_port == 10000
+    assert settings().webhook_port == 10000
 
 
 def test_explicit_webhook_port_wins_over_port(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("PORT", "10000")
     monkeypatch.setenv("WEBHOOK_PORT", "9999")
 
-    assert Settings(_env_file=None, bot_token=TOKEN).webhook_port == 9999
+    assert settings().webhook_port == 9999
 
 
-def test_webhook_mode_requires_a_url() -> None:
+def test_webhook_mode_requires_a_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("BOT_MODE", "webhook")
+    monkeypatch.delenv("WEBHOOK_URL", raising=False)
+
     with pytest.raises(ValueError, match="WEBHOOK_URL"):
-        Settings(_env_file=None, bot_token=TOKEN, bot_mode=BotMode.WEBHOOK)
+        settings()
